@@ -27,7 +27,7 @@ def get_args():
                         help='Use GPU training (default: True)')
     parser.add_argument('--use-noisy-net', action='store_true', default=False,
                         help='Use NoisyNet (default: False)')
-    parser.add_argument('--no-sticky-action', action='store_true', default=False,
+    parser.add_argument('--no-sticky-action', action='store_true', default=True,
                         help='Use Sticky Action (default: True)')    
     parser.add_argument("--sticky-action-prob", type=float, default=0.25,
                         help="Action probability (default: 0.25")
@@ -58,7 +58,7 @@ def get_args():
 
     parser.add_argument('--env-name', default='otc')
     parser.add_argument('--terminate', default=False)
-    parser.add_argument('--terminate-steps', default=1500000)
+    parser.add_argument('--terminate-steps', default=1800000)
 
 
     args = parser.parse_args()
