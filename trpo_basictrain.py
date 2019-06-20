@@ -26,7 +26,6 @@ if __name__ == "__main__":
     env = Preprocessing(env)
     env = Monitor(env, log_dir)
 
-
     multimodel = TRPO(CnnPolicy, env, verbose=1, gamma=args.gamma)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/trpo/trpomodel')
