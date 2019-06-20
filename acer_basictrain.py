@@ -39,4 +39,4 @@ if __name__ == "__main__":
     # Create PPO model for GPU
     multimodel = ACER(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
     multimodel.learn(total_timesteps=args.num_timesteps)
-    multimodel.save('{}multimodel'.format(log_dir))
+    multimodel.save('{}acermodel'.format(log_dir))
