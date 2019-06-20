@@ -1,0 +1,8 @@
+{
+    "challenge_id" : "unity-obstacle-tower-challenge-2019",
+    "grader_id": "unity-obstacle-tower-challenge-2019",
+    "authors" : ["hanschoi86"],
+    "description" : "Obstacle Tower Hans Agent",
+    "gpu": true,
+    "debug": false
+}

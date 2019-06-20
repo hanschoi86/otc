@@ -1,0 +1,7 @@
+.DS_Store
+*.pyc
+__pycache__
+.idea/
+.ipynb_checkpoints/
+UnitySDK.log
+obstacle-tower-env/

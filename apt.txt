@@ -1,0 +1,14 @@
+libopenmpi-dev
+openmpi-bin
+libblacs-mpi-dev
+openmpi-common
+build-essential
+curl
+git
+xvfb
+ffmpeg
+libsm6
+libxrender1
+libfontconfig1
+cmake
+zlib1g-dev
