@@ -3,10 +3,10 @@ import os
 import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 from otc_prep import Preprocessing
-from stable_baselines.common.policies import MlpPolicy, CnnPolicy
+from stable_baselines.common.policies import CnnPolicy
 from stable_baselines.common.vec_env import SubprocVecEnv
 from stable_baselines.bench import Monitor
-from stable_baselines import PPO2
+from stable_baselines import TRPO
 
 seed = np.random.randint(0, 100)
 
@@ -15,7 +15,7 @@ def make_env(log_dir, cpu):
     os.makedirs(sub_dir, exist_ok=True)
     def _init():
         env = ObstacleTowerEnv('./ObstacleTower/obstacletower', worker_id=seed+cpu,
-                               retro=True, config={'starting-floor': 5, 'total-floors': 11}, greyscale=True, timeout_wait=600)
+                               retro=True, config={'total-floors': 8}, greyscale=True, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
         env = Preprocessing(env)
@@ -32,13 +32,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     num_cpu = args.num_cpu
-    log_dir = "models/ppo/key/"
+    log_dir = "models/trpo/"
     os.makedirs(log_dir, exist_ok=True)
     # Create vectorized multi-environment to run on 12 cores
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     # Create PPO model for GPU
-    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
-    multimodel = multimodel.load('models/ppo/multimodel3', multienv)
+    multimodel = TRPO(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
     multimodel.learn(total_timesteps=args.num_timesteps)
-    multimodel.save('models/ppo/key/keymodel')
+    multimodel.save('models/trpo/trpomodel')
