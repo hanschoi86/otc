@@ -357,7 +357,7 @@ def main():
             torch.save(model.state_dict(), incre_model_path)
             torch.save(rnd.predictor.state_dict(), incre_predictor_path)
             torch.save(rnd.target.state_dict(), incre_target_path)
-            if global_step > 2000000:
+            if args.terminate and (global_step > 2000000):
                 break
 
 

@@ -57,6 +57,8 @@ def get_args():
                         help='Use a recurrent policy')
 
     parser.add_argument('--env-name', default='otc')
+    parser.add_argument('--terminate', default=False)
+
 
     args = parser.parse_args()
 
