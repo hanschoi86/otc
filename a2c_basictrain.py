@@ -27,6 +27,6 @@ if __name__ == "__main__":
     env = Preprocessing(env)
     env = Monitor(env, log_dir)
 
-    multimodel = DQN(CnnPolicy, env, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
+    multimodel = A2C(CnnPolicy, env, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/atc/atcmodel')
