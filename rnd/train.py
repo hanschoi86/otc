@@ -144,7 +144,7 @@ def main():
 
     is_render = False
     if not os.path.exists(args.save_dir):
-	    os.makedirs(args.save_dir)
+        os.makedirs(args.save_dir)
     model_path = os.path.join(args.save_dir, 'main.model')
     predictor_path = os.path.join(args.save_dir, 'main.pred')
     target_path = os.path.join(args.save_dir, 'main.target')
