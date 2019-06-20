@@ -65,6 +65,6 @@ class Preprocessing(object):
     self.game_over = game_over
     observation = observation / 255.
     if info['total_keys'] > self.keys:
-      reward = reward + 3.0
+      reward = reward + 10.0
       self.keys = info['total_keys']
     return observation, reward, game_over, info
