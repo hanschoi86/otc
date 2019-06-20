@@ -38,6 +38,6 @@ if __name__ == "__main__":
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     # Create PPO model for GPU
-    multimodel = TRPO(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
+    multimodel = TRPO(CnnPolicy, multienv, verbose=1, gamma=args.gamma)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/trpo/trpomodel')
