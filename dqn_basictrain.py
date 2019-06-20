@@ -3,7 +3,7 @@ import os
 import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 from otc_prep import Preprocessing
-from stable_baselines.common.policies import CnnPolicy
+from stable_baselines.deepq.policies import CnnPolicy
 from stable_baselines.common.vec_env import SubprocVecEnv
 from stable_baselines.bench import Monitor
 from stable_baselines import DQN
