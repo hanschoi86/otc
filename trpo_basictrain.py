@@ -20,7 +20,7 @@ if __name__ == "__main__":
     os.makedirs(log_dir, exist_ok=True)
 
     env = ObstacleTowerEnv('./ObstacleTower/obstacletower', worker_id=seed,
-                           retro=True, config={'total-floors': 8}, greyscale=True, timeout_wait=600)
+                           retro=True, config={'starting-floor': 5, 'total-floors': 10}, greyscale=True, timeout_wait=600)
     env._flattener = ActionFlattener([2, 3, 2, 1])
     env._action_space = env._flattener.action_space
     env = Preprocessing(env)
