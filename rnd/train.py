@@ -347,7 +347,10 @@ def main():
             torch.save(rnd.target.state_dict(), target_path)
 
             checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
-            last_checkpoint = checkpoint_list.max()
+            if len(checkpoint_list) == 0:
+                last_checkpoint = -1
+            else:
+                last_checkpoint = checkpoint_list.max()
             next_checkpoint = last_checkpoint + 1
             print("Latest Checkpoint is #{}, saving checkpoint is #{}.".format(last_checkpoint, next_checkpoint))
 
