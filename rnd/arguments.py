@@ -45,7 +45,7 @@ def get_args():
                         help='Maximum steps per episode (default: 18000)')
     parser.add_argument('--pre-obs-norm-steps', type=int, default=10,
                         help='Number of steps for pre-normalization (default: 50)')
-    parser.add_argument('--save-interval', type=int, default=200,
+    parser.add_argument('--save-interval', type=int, default=150,
                         help='Save interval, one save per n updates (default: 100)')
     parser.add_argument('--load-model', action='store_true', default=True,
                         help='Load pre-trained Model (default: False)')
@@ -58,7 +58,7 @@ def get_args():
 
     parser.add_argument('--env-name', default='otc')
     parser.add_argument('--terminate', default=True)
-    parser.add_argument('--terminate-steps', default=1800000)
+    parser.add_argument('--terminate-steps', default=1700000)
 
 
     args = parser.parse_args()
