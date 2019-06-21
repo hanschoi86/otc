@@ -25,7 +25,7 @@ def get_args():
                         help="Lambda coefficient in GAE formula (default: 0.95, 1 means no gae)")
     parser.add_argument('--no-cuda', action='store_true', default=False,
                         help='Use GPU training (default: True)')
-    parser.add_argument('--use-noisy-net', action='store_true', default=True,
+    parser.add_argument('--use-noisy-net', action='store_true', default=False,
                         help='Use NoisyNet (default: False)')
     parser.add_argument('--no-sticky-action', action='store_true', default=True,
                         help='Use Sticky Action (default: True)')    
