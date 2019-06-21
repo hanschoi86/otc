@@ -215,153 +215,155 @@ def main():
             next_obs = []
 
     print('Training...')
-    while True:
-        total_state, total_reward, total_done, total_next_state, total_action, total_int_reward, total_next_obs, total_ext_values, total_int_values, total_action_probs = [], [], [], [], [], [], [], [], [], []
-        global_step += (args.num_worker * args.num_step)
-        global_update += 1
+    for i in range(10):
+        print("Beginning global iteration", i)
+        while True:
+            total_state, total_reward, total_done, total_next_state, total_action, total_int_reward, total_next_obs, total_ext_values, total_int_values, total_action_probs = [], [], [], [], [], [], [], [], [], []
+            global_step += (args.num_worker * args.num_step)
+            global_update += 1
 
-        # Step 1. n-step rollout
-        for _ in range(args.num_step):
-            actions, value_ext, value_int, action_probs = get_action(model, device, np.float32(states) / 255.)
+            # Step 1. n-step rollout
+            for _ in range(args.num_step):
+                actions, value_ext, value_int, action_probs = get_action(model, device, np.float32(states) / 255.)
 
-            for parent_conn, action in zip(parent_conns, actions):
-                parent_conn.send(action)
+                for parent_conn, action in zip(parent_conns, actions):
+                    parent_conn.send(action)
 
-            next_states, rewards, dones, real_dones, log_rewards, next_obs = [], [], [], [], [], []
-            for parent_conn in parent_conns:
-                next_state, reward, done, real_done, log_reward = parent_conn.recv()
-                next_states.append(next_state)
-                rewards.append(reward)
-                dones.append(done)
-                real_dones.append(real_done)
-                log_rewards.append(log_reward)
-                next_obs.append(next_state[3, :, :].reshape([1, 84, 84]))
+                next_states, rewards, dones, real_dones, log_rewards, next_obs = [], [], [], [], [], []
+                for parent_conn in parent_conns:
+                    next_state, reward, done, real_done, log_reward = parent_conn.recv()
+                    next_states.append(next_state)
+                    rewards.append(reward)
+                    dones.append(done)
+                    real_dones.append(real_done)
+                    log_rewards.append(log_reward)
+                    next_obs.append(next_state[3, :, :].reshape([1, 84, 84]))
 
-            next_states = np.stack(next_states)
-            rewards = np.hstack(rewards)
-            dones = np.hstack(dones)
-            real_dones = np.hstack(real_dones)
-            next_obs = np.stack(next_obs)
+                next_states = np.stack(next_states)
+                rewards = np.hstack(rewards)
+                dones = np.hstack(dones)
+                real_dones = np.hstack(real_dones)
+                next_obs = np.stack(next_obs)
 
-            # total reward = int reward + ext Reward
-            intrinsic_reward = compute_intrinsic_reward(rnd, device, 
-                ((next_obs - obs_rms.mean) / np.sqrt(obs_rms.var)).clip(-5, 5))
-            intrinsic_reward = np.hstack(intrinsic_reward)
-            sample_i_rall += intrinsic_reward[sample_env_index]
+                # total reward = int reward + ext Reward
+                intrinsic_reward = compute_intrinsic_reward(rnd, device,
+                    ((next_obs - obs_rms.mean) / np.sqrt(obs_rms.var)).clip(-5, 5))
+                intrinsic_reward = np.hstack(intrinsic_reward)
+                sample_i_rall += intrinsic_reward[sample_env_index]
 
-            total_next_obs.append(next_obs)
-            total_int_reward.append(intrinsic_reward)
-            total_state.append(states)
-            total_reward.append(rewards)
-            total_done.append(dones)
-            total_action.append(actions)
+                total_next_obs.append(next_obs)
+                total_int_reward.append(intrinsic_reward)
+                total_state.append(states)
+                total_reward.append(rewards)
+                total_done.append(dones)
+                total_action.append(actions)
+                total_ext_values.append(value_ext)
+                total_int_values.append(value_int)
+                total_action_probs.append(action_probs)
+
+                states = next_states[:, :, :, :]
+
+                sample_rall += log_rewards[sample_env_index]
+
+                sample_step += 1
+                if real_dones[sample_env_index]:
+                    sample_episode += 1
+                    writer.add_scalar('data/reward_per_epi', sample_rall, sample_episode)
+                    writer.add_scalar('data/reward_per_rollout', sample_rall, global_update)
+                    writer.add_scalar('data/step', sample_step, sample_episode)
+                    sample_rall = 0
+                    sample_step = 0
+                    sample_i_rall = 0
+
+            # calculate last next value
+            _, value_ext, value_int, _ = get_action(model, device, np.float32(states) / 255.)
             total_ext_values.append(value_ext)
             total_int_values.append(value_int)
-            total_action_probs.append(action_probs)
+            # --------------------------------------------------
 
-            states = next_states[:, :, :, :]
+            total_state = np.stack(total_state).transpose([1, 0, 2, 3, 4]).reshape([-1, 4, 84, 84])
+            total_reward = np.stack(total_reward).transpose().clip(-1, 1)
+            total_action = np.stack(total_action).transpose().reshape([-1])
+            total_done = np.stack(total_done).transpose()
+            total_next_obs = np.stack(total_next_obs).transpose([1, 0, 2, 3, 4]).reshape([-1, 1, 84, 84])
+            total_ext_values = np.stack(total_ext_values).transpose()
+            total_int_values = np.stack(total_int_values).transpose()
+            total_logging_action_probs = np.vstack(total_action_probs)
 
-            sample_rall += log_rewards[sample_env_index]
+            # Step 2. calculate intrinsic reward
+            # running mean intrinsic reward
+            total_int_reward = np.stack(total_int_reward).transpose()
+            total_reward_per_env = np.array([discounted_reward.update(reward_per_step) for reward_per_step in total_int_reward.T])
+            mean, std, count = np.mean(total_reward_per_env), np.std(total_reward_per_env), len(total_reward_per_env)
+            reward_rms.update_from_moments(mean, std ** 2, count)
 
-            sample_step += 1
-            if real_dones[sample_env_index]:
-                sample_episode += 1
-                writer.add_scalar('data/reward_per_epi', sample_rall, sample_episode)
-                writer.add_scalar('data/reward_per_rollout', sample_rall, global_update)
-                writer.add_scalar('data/step', sample_step, sample_episode)
-                sample_rall = 0
-                sample_step = 0
-                sample_i_rall = 0
+            # normalize intrinsic reward
+            total_int_reward /= np.sqrt(reward_rms.var)
+            writer.add_scalar('data/int_reward_per_epi', np.sum(total_int_reward) / args.num_worker, sample_episode)
+            writer.add_scalar('data/int_reward_per_rollout', np.sum(total_int_reward) / args.num_worker, global_update)
+            # -------------------------------------------------------------------------------------------
 
-        # calculate last next value
-        _, value_ext, value_int, _ = get_action(model, device, np.float32(states) / 255.)
-        total_ext_values.append(value_ext)
-        total_int_values.append(value_int)
-        # --------------------------------------------------
+            # logging Max action probability
+            writer.add_scalar('data/max_prob', total_logging_action_probs.max(1).mean(), sample_episode)
 
-        total_state = np.stack(total_state).transpose([1, 0, 2, 3, 4]).reshape([-1, 4, 84, 84])
-        total_reward = np.stack(total_reward).transpose().clip(-1, 1)
-        total_action = np.stack(total_action).transpose().reshape([-1])
-        total_done = np.stack(total_done).transpose()
-        total_next_obs = np.stack(total_next_obs).transpose([1, 0, 2, 3, 4]).reshape([-1, 1, 84, 84])
-        total_ext_values = np.stack(total_ext_values).transpose()
-        total_int_values = np.stack(total_int_values).transpose()
-        total_logging_action_probs = np.vstack(total_action_probs)
+            # Step 3. make target and advantage
+            # extrinsic reward calculate
+            ext_target, ext_adv = make_train_data(total_reward,
+                                                  total_done,
+                                                  total_ext_values,
+                                                  args.ext_gamma,
+                                                  args.gae_lambda,
+                                                  args.num_step,
+                                                  args.num_worker,
+                                                  args.use_gae)
 
-        # Step 2. calculate intrinsic reward
-        # running mean intrinsic reward
-        total_int_reward = np.stack(total_int_reward).transpose()
-        total_reward_per_env = np.array([discounted_reward.update(reward_per_step) for reward_per_step in total_int_reward.T])
-        mean, std, count = np.mean(total_reward_per_env), np.std(total_reward_per_env), len(total_reward_per_env)
-        reward_rms.update_from_moments(mean, std ** 2, count)
+            # intrinsic reward calculate
+            # None Episodic
+            int_target, int_adv = make_train_data(total_int_reward,
+                                                  np.zeros_like(total_int_reward),
+                                                  total_int_values,
+                                                  args.int_gamma,
+                                                  args.gae_lambda,
+                                                  args.num_step,
+                                                  args.num_worker,
+                                                  args.use_gae)
 
-        # normalize intrinsic reward
-        total_int_reward /= np.sqrt(reward_rms.var)
-        writer.add_scalar('data/int_reward_per_epi', np.sum(total_int_reward) / args.num_worker, sample_episode)
-        writer.add_scalar('data/int_reward_per_rollout', np.sum(total_int_reward) / args.num_worker, global_update)
-        # -------------------------------------------------------------------------------------------
+            # add ext adv and int adv
+            total_adv = int_adv * args.int_coef + ext_adv * args.ext_coef
+            # -----------------------------------------------
 
-        # logging Max action probability
-        writer.add_scalar('data/max_prob', total_logging_action_probs.max(1).mean(), sample_episode)
+            # Step 4. update obs normalize param
+            obs_rms.update(total_next_obs)
+            # -----------------------------------------------
 
-        # Step 3. make target and advantage
-        # extrinsic reward calculate
-        ext_target, ext_adv = make_train_data(total_reward,
-                                              total_done,
-                                              total_ext_values,
-                                              args.ext_gamma,
-                                              args.gae_lambda,
-                                              args.num_step,
-                                              args.num_worker,
-                                              args.use_gae)
+            # Step 5. Training!
+            train_model(args, device, output_size, model, rnd, optimizer,
+                            np.float32(total_state) / 255., ext_target, int_target, total_action,
+                            total_adv, ((total_next_obs - obs_rms.mean) / np.sqrt(obs_rms.var)).clip(-5, 5),
+                            total_action_probs)
 
-        # intrinsic reward calculate
-        # None Episodic
-        int_target, int_adv = make_train_data(total_int_reward,
-                                              np.zeros_like(total_int_reward),
-                                              total_int_values,
-                                              args.int_gamma,
-                                              args.gae_lambda,
-                                              args.num_step,
-                                              args.num_worker,
-                                              args.use_gae)
+            if global_step % (args.num_worker * args.num_step * args.save_interval) == 0:
+                print('Now Global Step :{}'.format(global_step))
+                torch.save(model.state_dict(), model_path)
+                torch.save(rnd.predictor.state_dict(), predictor_path)
+                torch.save(rnd.target.state_dict(), target_path)
 
-        # add ext adv and int adv
-        total_adv = int_adv * args.int_coef + ext_adv * args.ext_coef
-        # -----------------------------------------------
+                checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
+                if len(checkpoint_list) == 0:
+                    last_checkpoint = -1
+                else:
+                    last_checkpoint = checkpoint_list.max()
+                next_checkpoint = last_checkpoint + 1
+                print("Latest Checkpoint is #{}, saving checkpoint is #{}.".format(last_checkpoint, next_checkpoint))
 
-        # Step 4. update obs normalize param
-        obs_rms.update(total_next_obs)
-        # -----------------------------------------------
-
-        # Step 5. Training!
-        train_model(args, device, output_size, model, rnd, optimizer, 
-                        np.float32(total_state) / 255., ext_target, int_target, total_action,
-                        total_adv, ((total_next_obs - obs_rms.mean) / np.sqrt(obs_rms.var)).clip(-5, 5),
-                        total_action_probs)
-
-        if global_step % (args.num_worker * args.num_step * args.save_interval) == 0:
-            print('Now Global Step :{}'.format(global_step))
-            torch.save(model.state_dict(), model_path)
-            torch.save(rnd.predictor.state_dict(), predictor_path)
-            torch.save(rnd.target.state_dict(), target_path)
-
-            checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
-            if len(checkpoint_list) == 0:
-                last_checkpoint = -1
-            else:
-                last_checkpoint = checkpoint_list.max()
-            next_checkpoint = last_checkpoint + 1
-            print("Latest Checkpoint is #{}, saving checkpoint is #{}.".format(last_checkpoint, next_checkpoint))
-
-            incre_model_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.model')
-            incre_predictor_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.pred')
-            incre_target_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.target')
-            torch.save(model.state_dict(), incre_model_path)
-            torch.save(rnd.predictor.state_dict(), incre_predictor_path)
-            torch.save(rnd.target.state_dict(), incre_target_path)
-            if args.terminate and (global_step > args.terminate_steps):
-                break
+                incre_model_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.model')
+                incre_predictor_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.pred')
+                incre_target_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.target')
+                torch.save(model.state_dict(), incre_model_path)
+                torch.save(rnd.predictor.state_dict(), incre_predictor_path)
+                torch.save(rnd.target.state_dict(), incre_target_path)
+                if args.terminate and (global_step > args.terminate_steps):
+                    break
 
 
 if __name__ == '__main__':

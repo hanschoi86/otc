@@ -57,7 +57,7 @@ def get_args():
                         help='Use a recurrent policy')
 
     parser.add_argument('--env-name', default='otc')
-    parser.add_argument('--terminate', default=False)
+    parser.add_argument('--terminate', default=True)
     parser.add_argument('--terminate-steps', default=1800000)
 
 
