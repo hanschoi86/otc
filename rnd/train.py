@@ -2,6 +2,7 @@ import numpy as np
 import os
 import re
 import glob
+import gc
 
 import torch.nn.functional as F
 import torch
@@ -363,6 +364,7 @@ def main():
                 torch.save(rnd.predictor.state_dict(), incre_predictor_path)
                 torch.save(rnd.target.state_dict(), incre_target_path)
                 if args.terminate and (global_step > args.terminate_steps):
+                    gc.collect()
                     break
 
 
