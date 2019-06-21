@@ -5,3 +5,4 @@ __pycache__
 .ipynb_checkpoints/
 UnitySDK.log
 obstacle-tower-env/
+rnd/trained_models/otc*
