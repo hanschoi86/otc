@@ -2,6 +2,7 @@ import numpy as np
 import os
 import re
 import glob
+import dill
 
 import torch.nn.functional as F
 import torch
@@ -151,8 +152,8 @@ def main():
 
     writer = SummaryWriter()#log_dir=args.log_dir)
 
-    reward_rms = RunningMeanStd()
-    obs_rms = RunningMeanStd(shape=(1, 1, 84, 84))
+
+
     discounted_reward = RewardForwardFilter(args.ext_gamma)
 
     model = CnnActorCriticNetwork(input_size, output_size, args.use_noisy_net)
@@ -196,23 +197,33 @@ def main():
     global_update = 0
     global_step = 0
 
-    # normalize observation
-    print('Initializes observation normalization...')
-    next_obs = []
-    for step in range(args.num_step * args.pre_obs_norm_steps):
-        actions = np.random.randint(0, output_size, size=(args.num_worker,))
+    if args.load_rms:
+        print("Loading RMS values for observation and reward normalization")
+        with open('reward_rms.pkl', 'rb') as f:
+            reward_rms = dill.load(f)
+        with open('obs_rms.pkl', 'rb') as f:
+            obs_rms = dill.load(f)
+    else:
+        reward_rms = RunningMeanStd()
+        obs_rms = RunningMeanStd(shape=(1, 1, 84, 84))
 
-        for parent_conn, action in zip(parent_conns, actions):
-            parent_conn.send(action)
+        # normalize observation
+        print('Initializing observation normalization...')
+        next_obs = []
+        for step in range(args.num_step * args.pre_obs_norm_steps):
+            actions = np.random.randint(0, output_size, size=(args.num_worker,))
 
-        for parent_conn in parent_conns:
-            next_state, reward, done, realdone, log_reward = parent_conn.recv()
-            next_obs.append(next_state[3, :, :].reshape([1, 84, 84]))
+            for parent_conn, action in zip(parent_conns, actions):
+                parent_conn.send(action)
 
-        if len(next_obs) % (args.num_step * args.num_worker) == 0:
-            next_obs = np.stack(next_obs)
-            obs_rms.update(next_obs)
-            next_obs = []
+            for parent_conn in parent_conns:
+                next_state, reward, done, realdone, log_reward = parent_conn.recv()
+                next_obs.append(next_state[3, :, :].reshape([1, 84, 84]))
+
+            if len(next_obs) % (args.num_step * args.num_worker) == 0:
+                next_obs = np.stack(next_obs)
+                obs_rms.update(next_obs)
+                next_obs = []
 
     print('Training...')
     while True:
@@ -361,6 +372,10 @@ def main():
             torch.save(rnd.predictor.state_dict(), incre_predictor_path)
             torch.save(rnd.target.state_dict(), incre_target_path)
             if args.terminate and (global_step > args.terminate_steps):
+                with open('reward_rms.pkl', 'wb') as f:
+                    dill.dump(reward_rms, f)
+                with open('obs_rms.pkl', 'wb') as f:
+                    dill.dump(obs_rms, f)
                 break
 
 

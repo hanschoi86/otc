@@ -38,7 +38,7 @@ if __name__ == '__main__':
     
     multienv = SubprocVecEnv([lambda: env])
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=.999, learning_rate=.0000625)
-    multimodel = multimodel.load('models/ppo/multimodel3', multienv)
+    multimodel = multimodel.load('models/ppo/multimodel4', multienv)
 
     if env.is_grading():
         episode_reward = run_evaluation(env, multimodel)
