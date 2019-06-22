@@ -59,7 +59,7 @@ def get_args():
     parser.add_argument('--env-name', default='otc')
     parser.add_argument('--terminate', default=True)
     parser.add_argument('--terminate-steps', default=1500000)
-    parser.add_argument('--load-rms', default=True)
+    parser.add_argument('--load-rms', default=False)
 
     args = parser.parse_args()
 
