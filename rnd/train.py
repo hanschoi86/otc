@@ -229,6 +229,7 @@ def main():
             dill.dump(reward_rms, f)
         with open('obs_rms.pkl', 'wb') as f:
             dill.dump(obs_rms, f)
+
     print('Training...')
     while True:
         total_state, total_reward, total_done, total_next_state, total_action, total_int_reward, total_next_obs, total_ext_values, total_int_values, total_action_probs = [], [], [], [], [], [], [], [], [], []
