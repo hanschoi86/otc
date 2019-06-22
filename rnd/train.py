@@ -197,6 +197,7 @@ def main():
     global_update = 0
     global_step = 0
 
+    print("Load RMS =", args.load_rms)
     if args.load_rms:
         print("Loading RMS values for observation and reward normalization")
         with open('reward_rms.pkl', 'rb') as f:
@@ -224,7 +225,10 @@ def main():
                 next_obs = np.stack(next_obs)
                 obs_rms.update(next_obs)
                 next_obs = []
-
+        with open('reward_rms.pkl', 'wb') as f:
+            dill.dump(reward_rms, f)
+        with open('obs_rms.pkl', 'wb') as f:
+            dill.dump(obs_rms, f)
     print('Training...')
     while True:
         total_state, total_reward, total_done, total_next_state, total_action, total_int_reward, total_next_obs, total_ext_values, total_int_values, total_action_probs = [], [], [], [], [], [], [], [], [], []
@@ -380,6 +384,6 @@ def main():
 
 
 if __name__ == '__main__':
-    for i in range(10):
+    for i in range(100):
         print("Beginning Main Iteration", i)
         main()
