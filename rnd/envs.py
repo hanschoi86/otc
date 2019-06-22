@@ -94,7 +94,7 @@ class AtariEnvironment(Process):
             p=0.25,
             max_episode_steps=18000):
         super(AtariEnvironment, self).__init__()
-        self.seed = np.random.randint(9000, 10000)
+        self.seed = np.random.randint(0, 10000)
         self.daemon = True
         self.env = ObstacleTowerEnv('../ObstacleTower/obstacletower', worker_id=self.seed,
                                retro=True, config={'total-floors': 8}, greyscale=True, timeout_wait=300)
