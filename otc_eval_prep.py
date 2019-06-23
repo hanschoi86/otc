@@ -59,6 +59,7 @@ class Preprocessing(object):
 
   def step(self, action):
     observation, reward, game_over, info = self.environment.step(action)
-    print(info)
+    if info['current_floor'] >= 5:
+      print(info)
     self.game_over = game_over
     return observation, reward, game_over, info

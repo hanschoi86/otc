@@ -23,7 +23,6 @@ class Preprocessing(object):
     self.game_over = False
     self.lives = 0  # Will need to be set by reset().
 
-    self.current_floor = 0
     self.current_key = 0
 
   @property
@@ -55,9 +54,7 @@ class Preprocessing(object):
 
   def reset(self):
     observation = self.environment.reset()
-    self.current_floor = 0
     self.current_key = 0
-    self.trigger = False
     return observation
 
   def render(self, mode):
@@ -67,16 +64,11 @@ class Preprocessing(object):
     observation, reward, game_over, info = self.environment.step(action)
     self.game_over = game_over
 
-    if info['current_floor'] > self.current_floor:
-      self.trigger = False
-      self.current_key = 0
-      self.current_floor = info['current_floor']
-
     if info['total_keys'] > self.current_key:
       reward = reward + 0.75
-      self.trigger = True
-      self.current_key = info['total_keys']
 
-    if self.trigger:
+    self.current_key = info['total_keys']
+
+    if info['total_keys'] > 0:
       observation = 255 - observation
     return observation, reward, game_over, info
