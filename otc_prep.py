@@ -22,7 +22,6 @@ class Preprocessing(object):
 
     self.game_over = False
     self.lives = 0  # Will need to be set by reset().
-    self.keys = 0
 
   @property
   def observation_space(self):
@@ -53,8 +52,6 @@ class Preprocessing(object):
 
   def reset(self):
     observation = self.environment.reset()
-    observation = observation / 255.
-    self.keys = 0
     return observation
 
   def render(self, mode):
@@ -63,8 +60,6 @@ class Preprocessing(object):
   def step(self, action):
     observation, reward, game_over, info = self.environment.step(action)
     self.game_over = game_over
-    observation = observation / 255.
-    if info['total_keys'] > self.keys:
-      reward = reward + 10.0
-      self.keys = info['total_keys']
+    if info['total_keys'] > 0:
+      observation = 255 - observation
     return observation, reward, game_over, info
