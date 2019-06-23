@@ -2,6 +2,7 @@ import numpy as np
 import os
 import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from otc_eval_prep import Preprocessing
 
 from stable_baselines.common.policies import MlpPolicy, CnnPolicy
 from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv
@@ -16,6 +17,7 @@ def make_env():
                                retro=True, config={'total-floors': 10}, greyscale=True, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
+        env = Preprocessing(env)
         return env
     return _init
 
@@ -43,7 +45,7 @@ if __name__ == "__main__":
 
     # Create PPO model for GPU
     multimodel = PPO2(CnnPolicy, env, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate)
-    multimodel = multimodel.load('models/ppo/multimodel', env)
+    multimodel = multimodel.load('models/ppo/multimodel4', env)
     for i in range(args.num_evaluation):
         print("Starting evaluation", i)
         print(run_episode(env, multimodel))
