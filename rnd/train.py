@@ -373,9 +373,13 @@ def main():
             incre_model_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.model')
             incre_predictor_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.pred')
             incre_target_path = os.path.join(args.save_dir, args.env_name + str(next_checkpoint) + '.target')
-            torch.save(model.state_dict(), incre_model_path)
-            torch.save(rnd.predictor.state_dict(), incre_predictor_path)
-            torch.save(rnd.target.state_dict(), incre_target_path)
+            with open(incre_model_path, 'wb') as f:
+                torch.save(model.state_dict(), f)
+            with open(incre_predictor_path, 'wb') as f:
+                torch.save(rnd.predictor.state_dict(), f)
+            with open(incre_target_path, 'wb') as f:
+                torch.save(rnd.target.state_dict(), f)
+
             if args.terminate and (global_step > args.terminate_steps):
                 with open('reward_rms.pkl', 'wb') as f:
                     dill.dump(reward_rms, f)
