@@ -71,8 +71,8 @@ if __name__ == '__main__':
         max_episode_steps=18000)
     work.start()
 
-    if env.is_grading():
-        episode_reward = run_evaluation(env, model, device, parent_conn)
+    if work.env.is_grading():
+        episode_reward = run_evaluation(work.env, model, device, parent_conn)
     else:
         while True:
             episode_reward = run_episode(model, device, parent_conn)
