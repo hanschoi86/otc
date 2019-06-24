@@ -48,8 +48,8 @@ if __name__ == '__main__':
 
     device = torch.device('cuda')
 
-    input_size = env.observation_space.shape
-    output_size = env.action_space.n
+    input_size = (84, 84, 4)
+    output_size = 12
 
     model_path = 'rnd/trained_models/main.model'
     num_worker = 1
