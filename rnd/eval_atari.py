@@ -6,7 +6,7 @@ from collections import deque
 from copy import copy
 
 from torch.multiprocessing import Pipe, Process
-from otcenv.obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
 from model import *
 from PIL import Image
