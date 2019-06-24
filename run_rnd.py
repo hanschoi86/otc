@@ -63,7 +63,7 @@ if __name__ == '__main__':
     parent_conn, child_conn = Pipe()
     work = OTCEnvironment(
         'otc',
-        is_render,
+        False,
         0,
         child_conn,
         sticky_action=sticky_action,
