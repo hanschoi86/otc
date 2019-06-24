@@ -1,28 +1,44 @@
 import numpy as np
-import os
 import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
-from stable_baselines.common.policies import CnnPolicy
-from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv
-from stable_baselines.bench import Monitor
-from stable_baselines import PPO2
+import torch
+from torch.multiprocessing import Pipe
+from torch.distributions.categorical import Categorical
 
-def run_episode(env, model):
+from rnd.model import CnnActorCriticNetwork
+from rnd.eval_atari import OTCEnvironment
+
+def get_action(model, device, state):
+    state = torch.Tensor(state).to(device)
+    action_probs, value_ext, value_int = model(state)
+    action_dist = Categorical(action_probs)
+    action = action_dist.sample()
+    return action.data.cpu().numpy().squeeze()
+
+def run_episode(model, device, parent_conn):
     done = False
     episode_reward = 0.0
-    obs = env.reset()
+    states = torch.zeros(num_worker, 4, 84, 84)
 
     while not done:
-        action, _states = model.predict(obs)
-        obs, reward, done, info = env.step(action)
+        actions = get_action(model, device, torch.div(states, 255.))
+        parent_conn.send(actions)
+        next_states = []
+        next_state, reward, semi_done, done, log_reward = parent_conn.recv()
+        next_states.append(next_state)
+        states = torch.from_numpy(np.stack(next_states))
+        states = states.type(torch.FloatTensor)
+
         episode_reward += reward
     return episode_reward
 
-def run_evaluation(env, model):
+
+def run_evaluation(env, model, device, parent_conn):
     while not env.done_grading():
-        run_episode(env, model)
+        run_episode(model, device, parent_conn)
         env.reset()
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -31,21 +47,39 @@ if __name__ == '__main__':
     parser.set_defaults(docker_training=False)
     args = parser.parse_args()
 
-    env = ObstacleTowerEnv(args.environment_filename, docker_training=args.docker_training, 
-                           retro=True, greyscale=True, timeout_wait=600)
-    env._flattener = ActionFlattener([2, 3, 2, 1])
-    env._action_space = env._flattener.action_space
-    
-    multienv = SubprocVecEnv([lambda: env])
-    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=.999, learning_rate=.0000625)
-    multimodel = multimodel.load('models/ppo/multimodel4', multienv)
+    device = torch.device('cuda')
 
-    if env.is_grading():
-        episode_reward = run_evaluation(env, multimodel)
+    input_size = (84, 84, 4)
+    output_size = 12
+
+    model_path = 'rnd/trained_models/main.model'
+    num_worker = 1
+    sticky_action = False
+
+    model = CnnActorCriticNetwork(input_size, output_size, sticky_action)
+    model = model.to(device)
+    model.load_state_dict(torch.load(model_path))
+
+    parent_conn, child_conn = Pipe()
+    work = OTCEnvironment(
+        'otc',
+        False,
+        0,
+        child_conn,
+        sticky_action=sticky_action,
+        p=.25,
+        max_episode_steps=18000)
+    work.start()
+
+    if work.env.is_grading():
+        episode_reward = run_evaluation(work.env, model, device, parent_conn)
+        print("Episode reward: " + str(episode_reward))
     else:
         while True:
-            episode_reward = run_episode(env, multimodel)
+            episode_reward = run_episode(model, device, parent_conn)
             print("Episode reward: " + str(episode_reward))
-            env.reset()
+            work.env.reset()
 
     env.close()
+
+
