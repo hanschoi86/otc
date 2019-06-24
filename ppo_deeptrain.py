@@ -8,7 +8,7 @@ from stable_baselines.common.vec_env import SubprocVecEnv
 from stable_baselines.bench import Monitor
 from stable_baselines import PPO2
 
-seed = np.random.randint(0, 100)
+seed = np.random.randint(6000, 7000)
 
 def make_env(log_dir, cpu):
     sub_dir = "{}cpu_{}/".format(log_dir, cpu)
