@@ -8,27 +8,34 @@ from torch.distributions.categorical import Categorical
 from rnd.model import CnnActorCriticNetwork
 from stable_baselines.common.atari_wrappers import FrameStack
 
-def run_episode(env, model):
+def get_action(model, device, state):
+    state = torch.Tensor(state).to(device)
+    action_probs, value_ext, value_int = model(state)
+    action_dist = Categorical(action_probs)
+    action = action_dist.sample()
+    return action.data.cpu().numpy().squeeze()
+
+def run_episode(model, device, parent_conn):
     done = False
     episode_reward = 0.0
-    obs = env.reset()
+    states = torch.zeros(num_worker, 4, 84, 84)
 
     while not done:
-        state = obs._force()
-        state = np.moveaxis(state, -1, 0).reshape(1, 4, 84, 84)
-        state = torch.Tensor(state).to(device)
-        action_probs, value_ext, value_int = model(state)
-        action_dist = Categorical(action_probs)
-        action = int(action_dist.sample())
+        actions = get_action(model, device, torch.div(states, 255.))
+        parent_conn.send(actions)
+        next_states = []
+        next_state, reward, semi_done, done, log_reward = parent_conn.recv()
+        next_states.append(next_state)
+        states = torch.from_numpy(np.stack(next_states))
+        states = states.type(torch.FloatTensor)
 
-        obs, reward, done, info = env.step(action)
         episode_reward += reward
     return episode_reward
 
 
-def run_evaluation(env, model):
+def run_evaluation(env, model, device, parent_conn):
     while not env.done_grading():
-        run_episode(env, model)
+        run_episode(model, device, parent_conn)
         env.reset()
 
 
@@ -39,27 +46,35 @@ if __name__ == '__main__':
     parser.set_defaults(docker_training=False)
     args = parser.parse_args()
 
-    env = ObstacleTowerEnv(args.environment_filename, docker_training=args.docker_training,
-                           retro=True, greyscale=True, timeout_wait=600)
-    env._flattener = ActionFlattener([2, 3, 2, 1])
-    env._action_space = env._flattener.action_space
-    env = FrameStack(env, 4)
-
     device = torch.device('cuda')
 
     input_size = env.observation_space.shape
     output_size = env.action_space.n
 
     model_path = 'rnd/trained_models/main.model'
-    model = CnnActorCriticNetwork(input_size, output_size, False)
+    num_worker = 1
+    sticky_action = False
+
+    model = CnnActorCriticNetwork(input_size, output_size, sticky_action)
     model = model.to(device)
     model.load_state_dict(torch.load(model_path))
 
+    parent_conn, child_conn = Pipe()
+    work = AtariEnvironment(
+        'otc',
+        is_render,
+        0,
+        child_conn,
+        sticky_action=sticky_action,
+        p=.25,
+        max_episode_steps=18000)
+    work.start()
+
     if env.is_grading():
-        episode_reward = run_evaluation(env, model)
+        episode_reward = run_evaluation(env, model, device, parent_conn)
     else:
         while True:
-            episode_reward = run_episode(env, model)
+            episode_reward = run_episode(model, device, parent_conn)
             print("Episode reward: " + str(episode_reward))
             env.reset()
 
