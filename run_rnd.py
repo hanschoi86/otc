@@ -72,8 +72,9 @@ if __name__ == '__main__':
     work.start()
 
     #if work.env.is_grading():
-    episode_reward = run_evaluation(work.env, model, device, parent_conn)
-    print("Episode reward: " + str(episode_reward))
+    for i in range(5):
+        episode_reward = run_evaluation(work.env, model, device, parent_conn)
+        print("Episode reward: " + str(episode_reward))
 
     env.close()
 
