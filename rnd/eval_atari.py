@@ -25,7 +25,7 @@ class OTCEnvironment(Process):
             sticky_action=True,
             p=0.25,
             max_episode_steps=18000):
-        super(AtariEnvironment, self).__init__()
+        super(OTCEnvironment, self).__init__()
         self.daemon = True
         self.env = ObstacleTowerEnv('../ObstacleTower/obstacletower', worker_id=0,
                                retro=True, greyscale=True, timeout_wait=600)
@@ -53,7 +53,7 @@ class OTCEnvironment(Process):
         self.reset()
 
     def run(self):
-        super(AtariEnvironment, self).run()
+        super(OTCEnvironment, self).run()
         while True:
             action = self.child_conn.recv()
 
