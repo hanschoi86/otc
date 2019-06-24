@@ -11,7 +11,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.distributions.categorical import Categorical
 from torch.multiprocessing import Pipe
-from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from otcenv.obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
 from model import CnnActorCriticNetwork, RNDModel
 from envs import *
