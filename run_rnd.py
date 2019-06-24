@@ -1,23 +1,12 @@
 import numpy as np
-
+import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+
 import torch
 from torch.distributions.categorical import Categorical
 
 from rnd.model import CnnActorCriticNetwork
 from stable_baselines.common.atari_wrappers import FrameStack
-
-
-import numpy as np
-import os
-import argparse
-from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
-
-from stable_baselines.common.policies import CnnPolicy
-from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv
-from stable_baselines.bench import Monitor
-from stable_baselines import PPO2
-
 
 def run_episode(env, model):
     done = False
