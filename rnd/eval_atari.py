@@ -27,7 +27,7 @@ class OTCEnvironment(Process):
             max_episode_steps=18000):
         super(OTCEnvironment, self).__init__()
         self.daemon = True
-        self.env = ObstacleTowerEnv('ObstacleTower/obstacletower', worker_id=0,
+        self.env = ObstacleTowerEnv('ObstacleTower/obstacletower', worker_id=np.random.randint(0, 100),
                                retro=True, greyscale=True, timeout_wait=600)
         self.env._flattener = ActionFlattener([2, 3, 2, 1])
         self.env._action_space = self.env._flattener.action_space
