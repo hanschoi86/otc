@@ -12,7 +12,7 @@ from stable_baselines.common.distributions import make_proba_dist_type, Categori
 from stable_baselines.common.input import observation_input
 
 
-def nature_cnn(scaled_images, **kwargs):
+def nature_cnn_deep(scaled_images, **kwargs):
     """
     CNN from Nature paper.
     :param scaled_images: (TensorFlow Tensor) Image input placeholder
@@ -28,7 +28,7 @@ def nature_cnn(scaled_images, **kwargs):
     return activ(linear(layer_4, 'fc2', n_hidden=512, init_scale=np.sqrt(2)))
 
 
-def nature_cnn_original(scaled_images, **kwargs):
+def nature_cnn(scaled_images, **kwargs):
     """
     CNN from Nature paper.
     :param scaled_images: (TensorFlow Tensor) Image input placeholder
