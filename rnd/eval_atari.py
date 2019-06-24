@@ -8,7 +8,7 @@ from copy import copy
 from torch.multiprocessing import Pipe, Process
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
-from model import *
+from rnd.model import *
 from PIL import Image
 
 
