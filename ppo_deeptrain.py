@@ -15,7 +15,7 @@ def make_env(log_dir, cpu):
     os.makedirs(sub_dir, exist_ok=True)
     def _init():
         env = ObstacleTowerEnv('./ObstacleTower/obstacletower', worker_id=seed+cpu,
-                               retro=True, config={'total-floors': 12}, greyscale=True, timeout_wait=600)
+                               retro=True, config={'starting-floor': 4, 'total-floors': 12}, greyscale=True, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
         env = Monitor(env, sub_dir)
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=12)
     parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
-    parser.add_argument('--num_timesteps', type=int, default=int(1e8))
+    parser.add_argument('--num_timesteps', type=int, default=int(3e7))
     parser.add_argument('--learning_rate', type=float, default=.000135)
     args = parser.parse_args()
 
