@@ -15,7 +15,8 @@ def run_episode(env, model):
 
     while not done:
         state = obs._force()
-        state = torch.Tensor(state.reshape(1, 4, 84, 84)).to(device)
+        state = np.moveaxis(state, -1, 0).reshape(1, 4, 84, 84)
+        state = torch.Tensor(state).to(device)
         action_probs, value_ext, value_int = model(state)
         action_dist = Categorical(action_probs)
         action = int(action_dist.sample())
