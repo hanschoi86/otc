@@ -3,10 +3,11 @@ import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
 import torch
+from torch.multiprocessing import Pipe
 from torch.distributions.categorical import Categorical
 
 from rnd.model import CnnActorCriticNetwork
-from stable_baselines.common.atari_wrappers import FrameStack
+from rnd.eval_atari import OTCEnvironment
 
 def get_action(model, device, state):
     state = torch.Tensor(state).to(device)
@@ -60,7 +61,7 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load(model_path))
 
     parent_conn, child_conn = Pipe()
-    work = AtariEnvironment(
+    work = OTCEnvironment(
         'otc',
         is_render,
         0,

@@ -12,7 +12,7 @@ from model import *
 from PIL import Image
 
 
-class AtariEnvironment(Process):
+class OTCEnvironment(Process):
     def __init__(
             self,
             env_name,
