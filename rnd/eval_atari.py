@@ -66,7 +66,7 @@ class OTCEnvironment(Process):
                     action = self.last_action
                 self.last_action = action
 
-            s, reward, done, info = self.env.step(action)
+            s, reward, done, info = self.env.step(int(action))
 
             if self.max_episode_steps < self.steps:
                 done = True
