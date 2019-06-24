@@ -57,9 +57,6 @@ class OTCEnvironment(Process):
         while True:
             action = self.child_conn.recv()
 
-            if 'Breakout' in self.env_name:
-                action += 1
-
             # sticky action
             if self.sticky_action:
                 if np.random.rand() <= self.p:
