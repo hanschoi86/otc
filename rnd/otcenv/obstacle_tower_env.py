@@ -212,7 +212,7 @@ class ObstacleTowerEnv(gym.Env):
         self.game_over = done
 
         if info.get('total_keys') > self.current_keys:
-            reward = 1.25
+            reward = 1.21
             self.current_keys = info.get('total_keys')
 
         if info.get('current_floor') > self.current_floor:
