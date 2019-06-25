@@ -25,7 +25,7 @@ def make_env(log_dir, cpu):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=12)
-    parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
+    parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.9995)
     parser.add_argument('--num_timesteps', type=int, default=int(15000000))
     parser.add_argument('--learning_rate', type=float, default=.000015)
     args = parser.parse_args()
@@ -37,7 +37,7 @@ if __name__ == "__main__":
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     # Create PPO model for GPU
-    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, cliprange=.1)
+    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, cliprange=.1, n_steps=512)
     multimodel = multimodel.load('models/ppo/multimodel6', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppo/multimodel7')
