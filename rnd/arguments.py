@@ -11,13 +11,13 @@ def get_args():
                         help='Learning rate (default: 1e-4)')
     parser.add_argument('--num-worker', type=int, default=12,
                         help='Number of workers (CPU processes) to use (default: 16)')
-    parser.add_argument('--num-step', type=int, default=128,
+    parser.add_argument('--num-step', type=int, default=512,
                         help='Number of forward steps (default: 128)')
     parser.add_argument('--eps', type=float, default=0.1,
                         help='Epsilon (default: 0.1)')
-    parser.add_argument('--ext-gamma', type=float, default=0.999,
+    parser.add_argument('--ext-gamma', type=float, default=0.9995,
                         help='Extrinsic discount factor for rewards (default: 0.999)')
-    parser.add_argument('--int-gamma', type=float, default=0.99,
+    parser.add_argument('--int-gamma', type=float, default=0.995,
                         help='Intrinsic discount factor for rewards (default: 0.99)')
     parser.add_argument('--use-gae', action='store_true', default=True,
                         help='use generalized advantage estimation (default: True)')
