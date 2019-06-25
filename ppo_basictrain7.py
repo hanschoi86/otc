@@ -37,7 +37,8 @@ if __name__ == "__main__":
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     # Create PPO model for GPU
-    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, cliprange=.1, n_steps=256)
+    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, 
+                      cliprange=.1, n_steps=256)
     multimodel = multimodel.load('models/ppo/multimodel6', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppo/multimodel7')
