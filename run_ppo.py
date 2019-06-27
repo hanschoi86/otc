@@ -40,12 +40,22 @@ if __name__ == '__main__':
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=.999, learning_rate=.0000625)
     multimodel = multimodel.load('models/ppo/multimodel5', multienv)
 
+    running_reward = 0
+    running_count = 0
+    five_reward = np.array([0, 0, 0, 0, 0])
     if env.is_grading():
         episode_reward = run_evaluation(env, multimodel)
     else:
         while True:
             episode_reward = run_episode(env, multimodel)
-            print("Episode reward: " + str(episode_reward))
+            running_reward += episode_reward
+            running_count += 1
+
+            five_reward = np.append(five_reward, episode_reward)[1:]
+
+            print("Episode reward: " + str(episode_reward),
+                  "Running reward: " + str(running_reward / running_count),
+                  "Five reward: " + str(five_reward.mean()))
             env.reset()
 
     env.close()
