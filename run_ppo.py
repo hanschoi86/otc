@@ -31,7 +31,7 @@ if __name__ == '__main__':
     parser.set_defaults(docker_training=False)
     args = parser.parse_args()
 
-    env = ObstacleTowerEnv(args.environment_filename, docker_training=args.docker_training, 
+    env = ObstacleTowerEnv(args.environment_filename, docker_training=args.docker_training, worker_id=np.random.randint(0, 100),
                            retro=True, greyscale=True, timeout_wait=600)
     env._flattener = ActionFlattener([2, 3, 2, 1])
     env._action_space = env._flattener.action_space
