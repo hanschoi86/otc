@@ -27,7 +27,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=16)
     parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
     parser.add_argument('--num_timesteps', type=int, default=int(5e7))
-    parser.add_argument('--learning_rate', type=float, default=.0000625)
+    parser.add_argument('--learning_rate', type=float, default=.0003)
     args = parser.parse_args()
 
     num_cpu = args.num_cpu
