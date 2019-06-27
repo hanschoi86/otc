@@ -51,7 +51,7 @@ def get_args():
                         help='Load pre-trained Model (default: False)')
     parser.add_argument('--log-dir', default=None,
                         help='Directory to save agent logs (default: runs/CURRENT_DATETIME_HOSTNAME)')
-    parser.add_argument('--save-dir', default='trained_models',
+    parser.add_argument('--save-dir', default='deep_models',
                         help='Directory to save agent logs (default: trained_models)')
     parser.add_argument('--recurrent-policy', action='store_true', default=False,
                         help='Use a recurrent policy')

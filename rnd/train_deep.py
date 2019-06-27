@@ -13,10 +13,10 @@ from torch.distributions.categorical import Categorical
 from torch.multiprocessing import Pipe
 from otcenv.obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
-from model import CnnActorCriticNetwork, RNDModel
+from model import CnnActorCriticNetworkDeep, RNDModel
 from envs import *
 from utils import RunningMeanStd, RewardForwardFilter
-from arguments import get_args
+from arguments_deep import get_args
 
 from tensorboardX import SummaryWriter
 
@@ -156,7 +156,7 @@ def main():
 
     discounted_reward = RewardForwardFilter(args.ext_gamma)
 
-    model = CnnActorCriticNetwork(input_size, output_size, args.use_noisy_net)
+    model = CnnActorCriticNetworkDeep(input_size, output_size, args.use_noisy_net)
     rnd = RNDModel(input_size, output_size)
     model = model.to(device)
     rnd = rnd.to(device)
@@ -362,7 +362,7 @@ def main():
             torch.save(rnd.predictor.state_dict(), predictor_path)
             torch.save(rnd.target.state_dict(), target_path)
 
-            checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
+            checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('deep_models', args.env_name+'*.model'))])
             if len(checkpoint_list) == 0:
                 last_checkpoint = -1
             else:

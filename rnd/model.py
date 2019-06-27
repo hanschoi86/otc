@@ -69,7 +69,7 @@ class Flatten(nn.Module):
         return input.view(input.size(0), -1)
 
 
-class CnnActorCriticNetwork(nn.Module):
+class CnnActorCriticNetworkDeep(nn.Module):
     def __init__(self, input_size, output_size, use_noisy_net=False):
         super(CnnActorCriticNetwork, self).__init__()
 
@@ -153,6 +153,73 @@ class CnnActorCriticNetwork(nn.Module):
         value_int = self.critic_int(self.extra_layer(x) + x)
         return action_probs, value_ext, value_int
 
+class CnnActorCriticNetworkDefault(nn.Module):
+    def __init__(self, input_size, output_size, use_noisy_net=False):
+        super(CnnActorCriticNetwork, self).__init__()
+
+        if use_noisy_net:
+            print('Use NoisyNet')
+            linear = NoisyLinear
+        else:
+            linear = nn.Linear
+
+        self.feature = nn.Sequential(
+            nn.Conv2d(4, 32, kernel_size=8, stride=4),
+            nn.ReLU(),
+            nn.Conv2d(32, 64, kernel_size=4, stride=2),
+            nn.ReLU(),
+            nn.Conv2d(64, 64, kernel_size=3, stride=1),
+            nn.ReLU(),
+            Flatten(),
+            linear(7 * 7 * 64, 256),
+            nn.ReLU(),
+            linear(256, 448),
+            nn.ReLU()
+        )
+
+        self.actor = nn.Sequential(
+            linear(448, 448),
+            nn.ReLU(),
+            linear(448, output_size)
+        )
+
+        self.extra_layer = nn.Sequential(
+            linear(448, 448),
+            nn.ReLU()
+        )
+
+        self.critic_ext = linear(448, 1)
+        self.critic_int = linear(448, 1)
+
+        # Initialize weights
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+                init.orthogonal_(m.weight, np.sqrt(2))
+                m.bias.data.zero_()
+
+        init.orthogonal_(self.critic_ext.weight, 0.01)
+        self.critic_ext.bias.data.zero_()
+
+        init.orthogonal_(self.critic_int.weight, 0.01)
+        self.critic_int.bias.data.zero_()
+
+        for i in range(len(self.actor)):
+            if type(self.actor[i]) == nn.Linear:
+                init.orthogonal_(self.actor[i].weight, 0.01)
+                self.actor[i].bias.data.zero_()
+
+        for i in range(len(self.extra_layer)):
+            if type(self.extra_layer[i]) == nn.Linear:
+                init.orthogonal_(self.extra_layer[i].weight, 0.1)
+                self.extra_layer[i].bias.data.zero_()
+
+    def forward(self, state):
+        x = self.feature(state)
+        action_scores = self.actor(x)
+        action_probs = F.softmax(action_scores, dim=1)
+        value_ext = self.critic_ext(self.extra_layer(x) + x)
+        value_int = self.critic_int(self.extra_layer(x) + x)
+        return action_probs, value_ext, value_int
 
 class RNDModel(nn.Module):
     def __init__(self, input_size, output_size):
