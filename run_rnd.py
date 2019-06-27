@@ -71,15 +71,26 @@ if __name__ == '__main__':
         max_episode_steps=18000)
     work.start()
 
+    running_reward = 0
+    running_count = 0
+    five_reward = np.array([0, 0, 0, 0, 0])
+
     if work.env.is_grading():
         episode_reward = run_evaluation(work.env, model, device, parent_conn)
         print("Episode reward: " + str(episode_reward))
     else:
         while True:
             episode_reward = run_episode(model, device, parent_conn)
-            print("Episode reward: " + str(episode_reward))
+            running_reward += episode_reward
+            running_count += 1
+
+            five_reward = np.append(five_reward, episode_reward)[1:]
+
+            print("Episode reward: " + str(episode_reward),
+                  "Running reward: " + str(running_reward / running_count),
+                  "Five reward: " + str(five_reward.mean()))
             work.env.reset()
 
-    env.close()
+    work.env.close()
 
 
