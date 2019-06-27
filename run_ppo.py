@@ -1,7 +1,7 @@
 import numpy as np
 import os
 import argparse
-from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from original_otc import ObstacleTowerEnv, ActionFlattener
 
 from stable_baselines.common.policies import CnnPolicy
 from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv

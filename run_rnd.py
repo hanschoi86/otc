@@ -1,6 +1,6 @@
 import numpy as np
 import argparse
-from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from original_otc import ObstacleTowerEnv, ActionFlattener
 
 import torch
 from torch.multiprocessing import Pipe
