@@ -38,7 +38,7 @@ if __name__ == '__main__':
     
     multienv = SubprocVecEnv([lambda: env])
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=.999, learning_rate=.0000625)
-    multimodel = multimodel.load('models/ppo/multimodel5', multienv)
+    multimodel = multimodel.load('models/ppo/multimodel7', multienv)
 
     running_reward = 0
     running_count = 0
