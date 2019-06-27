@@ -5,3 +5,4 @@ __pycache__
 .ipynb_checkpoints/
 UnitySDK.log
 rnd/trained_models/otc*
+rnd/default_models/otc*
