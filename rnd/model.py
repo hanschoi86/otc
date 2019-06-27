@@ -71,7 +71,7 @@ class Flatten(nn.Module):
 
 class CnnActorCriticNetworkDeep(nn.Module):
     def __init__(self, input_size, output_size, use_noisy_net=False):
-        super(CnnActorCriticNetwork, self).__init__()
+        super(CnnActorCriticNetworkDeep, self).__init__()
 
         if use_noisy_net:
             print('Use NoisyNet')
@@ -155,7 +155,7 @@ class CnnActorCriticNetworkDeep(nn.Module):
 
 class CnnActorCriticNetworkDefault(nn.Module):
     def __init__(self, input_size, output_size, use_noisy_net=False):
-        super(CnnActorCriticNetwork, self).__init__()
+        super(CnnActorCriticNetworkDefault, self).__init__()
 
         if use_noisy_net:
             print('Use NoisyNet')
