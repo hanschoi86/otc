@@ -6,7 +6,7 @@ from collections import deque
 from copy import copy
 
 from torch.multiprocessing import Pipe, Process
-from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
+from original_otc import ObstacleTowerEnv, ActionFlattener
 
 from rnd.model import *
 from PIL import Image
@@ -79,8 +79,8 @@ class OTCEnvironment(Process):
 
             if done:
                 self.recent_rlist.append(self.rall)
-                print("[Episode {}({})] Step: {}  Reward: {}  Recent Reward: {}".format(
-                    self.episode, self.env_idx, self.steps, self.rall, np.mean(self.recent_rlist)))
+                #print("[Episode {}({})] Step: {}  Reward: {}  Recent Reward: {}".format(
+                #    self.episode, self.env_idx, self.steps, self.rall, np.mean(self.recent_rlist)))
 
                 self.history = self.reset()
 
