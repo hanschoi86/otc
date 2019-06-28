@@ -9,7 +9,7 @@ def get_args():
                         help='Algorithm to use: rnd | ppo')
     parser.add_argument('--lr', type=float, default=.0000325,
                         help='Learning rate (default: 1e-4)')
-    parser.add_argument('--num-worker', type=int, default=12,
+    parser.add_argument('--num-worker', type=int, default=16,
                         help='Number of workers (CPU processes) to use (default: 16)')
     parser.add_argument('--num-step', type=int, default=256,
                         help='Number of forward steps (default: 128)')
