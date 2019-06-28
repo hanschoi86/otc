@@ -5,7 +5,7 @@ from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
 from deep_baselines.common.policies import MlpPolicy, CnnPolicy
 from deep_baselines.common.vec_env import SubprocVecEnv
-from deep_baselines.bench import Monitor
+from stable_baselines.bench import Monitor
 from deep_baselines import PPO2
 
 seed = np.random.randint(0, 100)
