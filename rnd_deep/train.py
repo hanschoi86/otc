@@ -162,12 +162,12 @@ def main():
     rnd = rnd.to(device)
     optimizer = optim.Adam(list(model.parameters()) + list(rnd.predictor.parameters()), lr=args.lr)
    
-    #if args.load_model:
-    #    "Loading model..."
-    #    if args.cuda:
-    #        model.load_state_dict(torch.load(model_path))
-    #    else:
-    #        model.load_state_dict(torch.load(model_path, map_location='cpu'))
+    if args.load_model:
+        "Loading model..."
+        if args.cuda:
+            model.load_state_dict(torch.load(model_path))
+        else:
+            model.load_state_dict(torch.load(model_path, map_location='cpu'))
 
     works = []
     parent_conns = []
