@@ -7,3 +7,4 @@ UnitySDK.log
 rnd/trained_models/otc*
 rnd/default_models/otc*
 rnd_deep/trained_models/otc*
+models/ppo/cpu*
