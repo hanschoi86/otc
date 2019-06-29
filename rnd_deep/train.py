@@ -162,12 +162,12 @@ def main():
     rnd = rnd.to(device)
     optimizer = optim.Adam(list(model.parameters()) + list(rnd.predictor.parameters()), lr=args.lr)
    
-    #if args.load_model:
-    #    "Loading model..."
-    #    if args.cuda:
-    #        model.load_state_dict(torch.load(model_path))
-    #    else:
-    #        model.load_state_dict(torch.load(model_path, map_location='cpu'))
+    if args.load_model:
+        "Loading model..."
+        if args.cuda:
+            model.load_state_dict(torch.load(model_path))
+        else:
+            model.load_state_dict(torch.load(model_path, map_location='cpu'))
 
     works = []
     parent_conns = []
@@ -362,7 +362,7 @@ def main():
             torch.save(rnd.predictor.state_dict(), predictor_path)
             torch.save(rnd.target.state_dict(), target_path)
 
-            checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
+            checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('deep_models', args.env_name+'*.model'))])
             if len(checkpoint_list) == 0:
                 last_checkpoint = -1
             else:

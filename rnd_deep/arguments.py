@@ -7,7 +7,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='RL')
     parser.add_argument('--algo', default='rnd',
                         help='Algorithm to use: rnd | ppo')
-    parser.add_argument('--lr', type=float, default=.0000325,
+    parser.add_argument('--lr', type=float, default=.000325,
                         help='Learning rate (default: 1e-4)')
     parser.add_argument('--num-worker', type=int, default=12,
                         help='Number of workers (CPU processes) to use (default: 16)')
@@ -51,7 +51,7 @@ def get_args():
                         help='Load pre-trained Model (default: False)')
     parser.add_argument('--log-dir', default=None,
                         help='Directory to save agent logs (default: runs/CURRENT_DATETIME_HOSTNAME)')
-    parser.add_argument('--save-dir', default='trained_models',
+    parser.add_argument('--save-dir', default='deep_models',
                         help='Directory to save agent logs (default: trained_models)')
     parser.add_argument('--recurrent-policy', action='store_true', default=False,
                         help='Use a recurrent policy')
