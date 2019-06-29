@@ -16,7 +16,7 @@ def make_env(log_dir, cpu):
     def _init():
         env = ObstacleTowerEnv('./ObstacleTower/obstacletower', worker_id=seed+cpu,
                                retro=True, config={'total-floors': 10, 'default-theme':0, 'visual-theme':0,
-                                                   'lighting-type': 0}, greyscale=True, timeout_wait=600)
+                                                   'lighting-type': 1}, greyscale=True, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
         env = Monitor(env, sub_dir)
