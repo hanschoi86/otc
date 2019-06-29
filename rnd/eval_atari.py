@@ -28,7 +28,7 @@ class OTCEnvironment(Process):
         super(OTCEnvironment, self).__init__()
         self.daemon = True
         self.env = ObstacleTowerEnv('ObstacleTower/obstacletower', worker_id=np.random.randint(0, 100),
-                               retro=True, greyscale=True, timeout_wait=600)
+                               retro=True, greyscale=True, timeout_wait=600, realtime_mode=True)
         self.env._flattener = ActionFlattener([2, 3, 2, 1])
         self.env._action_space = self.env._flattener.action_space
         self.env_name = env_name
