@@ -33,10 +33,8 @@ if __name__ == "__main__":
     num_cpu = args.num_cpu
     log_dir = "models/ppodeep/"
     os.makedirs(log_dir, exist_ok=True)
-    # Create vectorized multi-environment to run on 12 cores
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
-    # Create PPO model for GPU
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, n_steps=256)
     multimodel = multimodel.load('models/ppodeep/deepmodel', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
