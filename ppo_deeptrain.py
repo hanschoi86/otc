@@ -35,7 +35,7 @@ if __name__ == "__main__":
     os.makedirs(log_dir, exist_ok=True)
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
-    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, n_steps=1024)
+    multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, n_steps=64)
     multimodel = multimodel.load('models/ppodeep/deepmodel', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppodeep/deepmodel')

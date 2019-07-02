@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
     # Create PPO model for GPU
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, 
-                      cliprange=.1, n_steps=512)
+                      cliprange=.1, n_steps=64)
     multimodel = multimodel.load('models/ppo/multimodel_running', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppo/multimodel_running')
