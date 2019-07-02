@@ -2,6 +2,7 @@
 import numpy as np
 import gin.tf
 from PIL import Image
+from gym.spaces import Box
 
 # Preprocess environment
 @gin.configurable
@@ -26,7 +27,10 @@ class Preprocessing(object):
 
   @property
   def observation_space(self):
-    return self.environment.observation_space
+    return Box(
+            0, 255,
+            dtype=np.float32,
+            shape=(84, 84, 3))
 
   @property
   def spec(self):

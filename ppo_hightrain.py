@@ -38,6 +38,6 @@ if __name__ == "__main__":
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, n_steps=128)
-    multimodel = multimodel.load('models/ppohigh/deepmodel', multienv)
+    multimodel = multimodel.load('models/ppohigh/highmodel', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppohigh/highmodel')
