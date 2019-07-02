@@ -31,7 +31,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     num_cpu = args.num_cpu
-    log_dir = "models/ppofix0/"
+    log_dir = "models/ppofixed/"
     os.makedirs(log_dir, exist_ok=True)
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
