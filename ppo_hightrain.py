@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=16)
     parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
-    parser.add_argument('--num_timesteps', type=int, default=int(1e5))
+    parser.add_argument('--num_timesteps', type=int, default=int(1e7))
     parser.add_argument('--learning_rate', type=float, default=.000135)
     args = parser.parse_args()
 
@@ -38,6 +38,6 @@ if __name__ == "__main__":
     multienv = SubprocVecEnv([make_env(log_dir, cpu) for cpu in range(num_cpu)])
 
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, n_steps=128)
-    #multimodel = multimodel.load('models/ppohigh/highmodel', multienv)
+    multimodel = multimodel.load('models/ppohigh/highmodel', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppohigh/highmodel')
