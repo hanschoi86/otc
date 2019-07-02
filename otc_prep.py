@@ -32,6 +32,11 @@ class Preprocessing(object):
             dtype=np.float32,
             shape=(84, 84, 3))
 
+  def _observation_space(self):
+    return Box(
+            0, 255,
+            dtype=np.float32,
+            shape=(84, 84, 3))
   @property
   def spec(self):
     return self.environment.spec
