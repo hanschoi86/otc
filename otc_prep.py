@@ -1,6 +1,7 @@
 # Load libraries
 import numpy as np
 import gin.tf
+from PIL import Image
 
 # Preprocess environment
 @gin.configurable
@@ -52,7 +53,9 @@ class Preprocessing(object):
 
   def reset(self):
     observation = self.environment.reset()
-    observation = observation / 255.
+    obs_image = Image.fromarray(np.array(observation[0] * 255, dtype=np.uint8))
+    obs_image = obs_image.resize((84, 84), Image.NEAREST)
+    observation = np.array(obs_image)
     return observation
 
   def render(self, mode):
@@ -61,5 +64,8 @@ class Preprocessing(object):
   def step(self, action):
     observation, reward, game_over, info = self.environment.step(action)
     self.game_over = game_over
-    observation = observation / 255.
+
+    obs_image = Image.fromarray(np.array(observation[0] * 255, dtype=np.uint8))
+    obs_image = obs_image.resize((84, 84), Image.NEAREST)
+    observation = np.array(obs_image)
     return observation, reward, game_over, info
