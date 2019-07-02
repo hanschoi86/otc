@@ -9,3 +9,4 @@ rnd/default_models/otc*
 rnd_deep/trained_models/otc*
 models/ppodeep/cpu*
 models/ppo/cpu*
+models/ppohigh/cpu*
