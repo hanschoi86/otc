@@ -7,11 +7,11 @@ import gym
 import numpy as np
 import tensorflow as tf
 
-from deep_baselines import logger
-from deep_baselines.common import explained_variance, ActorCriticRLModel, tf_util, SetVerbosity, TensorboardWriter
-from deep_baselines.common.runners import AbstractEnvRunner
-from deep_baselines.common.policies import ActorCriticPolicy, RecurrentActorCriticPolicy
-from deep_baselines.a2c.utils import total_episode_reward_logger
+from fixed_baselines import logger
+from fixed_baselines.common import explained_variance, ActorCriticRLModel, tf_util, SetVerbosity, TensorboardWriter
+from fixed_baselines.common.runners import AbstractEnvRunner
+from fixed_baselines.common.policies import ActorCriticPolicy, RecurrentActorCriticPolicy
+from fixed_baselines.a2c.utils import total_episode_reward_logger
 
 
 class PPO2(ActorCriticRLModel):

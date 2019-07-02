@@ -1,1 +1,1 @@
-from deep_baselines.ppo2.ppo2 import PPO2
+from fixed_baselines.ppo2.ppo2 import PPO2

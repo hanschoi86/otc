@@ -6,10 +6,10 @@ import numpy as np
 import tensorflow as tf
 from gym.spaces import Discrete
 
-from deep_baselines.a2c.utils import conv, linear, conv_to_fc, batch_to_seq, seq_to_batch, lstm
-from deep_baselines.common.distributions import make_proba_dist_type, CategoricalProbabilityDistribution, \
+from fixed_baselines.a2c.utils import conv, linear, conv_to_fc, batch_to_seq, seq_to_batch, lstm
+from fixed_baselines.common.distributions import make_proba_dist_type, CategoricalProbabilityDistribution, \
     MultiCategoricalProbabilityDistribution, DiagGaussianProbabilityDistribution, BernoulliProbabilityDistribution
-from deep_baselines.common.input import observation_input
+from fixed_baselines.common.input import observation_input
 
 
 def nature_cnn(scaled_images, **kwargs):
