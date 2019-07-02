@@ -26,7 +26,7 @@ def nature_cnn(scaled_images, **kwargs):
     layer_4 = activ(conv(layer_3, 'c4', n_filters=64, filter_size=3, stride=1, pad='SAME', init_scale=np.sqrt(2), **kwargs))
     layer_4 = conv_to_fc(layer_4)
     layer_5 = activ(linear(layer_4, 'fc1', n_hidden=256, init_scale=np.sqrt(2)))
-    return activ(linear(layer_5, 'fc2', n_hidden=448, init_scale=np.sqrt(2)))
+    return activ(linear(layer_5, 'fc2', n_hidden=256, init_scale=np.sqrt(2)))
 
 
 def mlp_extractor(flat_observations, net_arch, act_fun):
