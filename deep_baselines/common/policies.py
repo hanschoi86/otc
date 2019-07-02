@@ -19,8 +19,9 @@ def nature_cnn(scaled_images, **kwargs):
     :param kwargs: (dict) Extra keywords parameters for the convolutional layers of the CNN
     :return: (TensorFlow Tensor) The CNN output layer
     """
+    layer_0 = tf.div(scaled_images, 255.)
     activ = tf.nn.relu
-    layer_1 = activ(conv(scaled_images, 'c1', n_filters=8, filter_size=4, stride=2, pad='SAME', init_scale=np.sqrt(2), **kwargs))
+    layer_1 = activ(conv(layer_0, 'c1', n_filters=8, filter_size=4, stride=2, pad='SAME', init_scale=np.sqrt(2), **kwargs))
     layer_2 = activ(conv(layer_1, 'c2', n_filters=16, filter_size=4, stride=2, pad='SAME', init_scale=np.sqrt(2), **kwargs))
     layer_3 = activ(conv(layer_2, 'c3', n_filters=32, filter_size=4, stride=2, pad='SAME', init_scale=np.sqrt(2), **kwargs))
     layer_4 = activ(conv(layer_3, 'c4', n_filters=64, filter_size=3, stride=1, pad='SAME', init_scale=np.sqrt(2), **kwargs))
