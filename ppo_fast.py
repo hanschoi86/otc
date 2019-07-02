@@ -25,7 +25,7 @@ def make_env(log_dir, cpu):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=48)
-    parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
+    parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.995)
     parser.add_argument('--num_timesteps', type=int, default=int(3e7))
     parser.add_argument('--learning_rate', type=float, default=.000135)
     args = parser.parse_args()
