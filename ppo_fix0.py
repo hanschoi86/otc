@@ -3,10 +3,10 @@ import os
 import argparse
 from obstacle_tower_env import ObstacleTowerEnv, ActionFlattener
 
-from deep_baselines.common.policies import CnnPolicy
-from deep_baselines.common.vec_env import SubprocVecEnv
+from fixed_baselines.common.policies import CnnPolicy
+from fixed_baselines.common.vec_env import SubprocVecEnv
 from stable_baselines.bench import Monitor
-from deep_baselines import PPO2
+from fixed_baselines import PPO2
 
 seed = np.random.randint(0, 1000)
 
