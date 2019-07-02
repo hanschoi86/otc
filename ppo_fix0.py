@@ -7,7 +7,6 @@ from deep_baselines.common.policies import CnnPolicy
 from deep_baselines.common.vec_env import SubprocVecEnv
 from stable_baselines.bench import Monitor
 from deep_baselines import PPO2
-from otc_prep import Preprocessing
 
 seed = np.random.randint(0, 1000)
 
@@ -19,7 +18,6 @@ def make_env(log_dir, cpu):
                                retro=True, config={'total-floors': 6, 'visual-theme': 0, 'default-theme': 0}, greyscale=False, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
-        env = Preprocessing(env)
         env = Monitor(env, sub_dir)
         return env
     return _init
