@@ -81,7 +81,7 @@ class Preprocessing(object):
     obs_image = obs_image.resize((84, 84), Image.NEAREST)
     observation = np.array(obs_image)
     if self.grey:
-      observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY)
+      observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY).reshape((84, 84, 1))
     return observation
 
   def render(self, mode):
@@ -95,5 +95,5 @@ class Preprocessing(object):
     obs_image = obs_image.resize((84, 84), Image.NEAREST)
     observation = np.array(obs_image)
     if self.grey:
-      observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY)
+      observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY).reshape((84, 84, 1))
     return observation, reward, game_over, info
