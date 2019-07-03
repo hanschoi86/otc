@@ -13,7 +13,7 @@ class Preprocessing(object):
   do anything else to the environment.
   """
 
-  def __init__(self, environment):
+  def __init__(self, environment, depth=3):
     """Constructor for an Obstacle Tower preprocessor.
 
     Args:
@@ -21,7 +21,7 @@ class Preprocessing(object):
 
     """
     self.environment = environment
-
+    self.depth = depth
     self.game_over = False
     self.lives = 0  # Will need to be set by reset().
 
@@ -30,14 +30,14 @@ class Preprocessing(object):
     return Box(
             0, 255,
             dtype=np.float32,
-            shape=(84, 84, 3))
+            shape=(84, 84, self.depth))
 
   @property
   def _observation_space(self):
     return Box(
             0, 255,
             dtype=np.float32,
-            shape=(84, 84, 3))
+            shape=(84, 84, self.depth))
   @property
   def spec(self):
     return self.environment.spec

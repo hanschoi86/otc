@@ -20,7 +20,7 @@ def make_env(log_dir, cpu):
                                retro=False, config={'total-floors': 10}, greyscale=True, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
-        env = Preprocessing(env)
+        env = Preprocessing(env, depth=1)
         env = Monitor(env, sub_dir)
         return env
     return _init
