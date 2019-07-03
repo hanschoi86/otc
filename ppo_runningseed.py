@@ -42,4 +42,4 @@ if __name__ == "__main__":
                       cliprange=.1, n_steps=1024)
     multimodel = multimodel.load('models/ppo/multimodel_running', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
-    multimodel.save('models/ppo/multimodel_running')
+    multimodel.save('models/ppo/multimodel_runningseed')
