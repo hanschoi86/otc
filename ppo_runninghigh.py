@@ -17,10 +17,10 @@ def make_env(log_dir, cpu):
     os.makedirs(sub_dir, exist_ok=True)
     def _init():
         env = ObstacleTowerEnv('./ObstacleTower/obstacletower', worker_id=seed+cpu,
-                               retro=False, config={'total-floors': 10}, greyscale=True, timeout_wait=600)
+                               retro=False, config={'total-floors': 10}, greyscale=False, timeout_wait=600)
         env._flattener = ActionFlattener([2, 3, 2, 1])
         env._action_space = env._flattener.action_space
-        env = Preprocessing(env, depth=1)
+        env = Preprocessing(env, grey=True)
         env = Monitor(env, sub_dir)
         return env
     return _init
