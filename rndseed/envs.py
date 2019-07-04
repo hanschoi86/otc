@@ -97,7 +97,7 @@ class AtariEnvironment(Process):
         self.seed = np.random.randint(0, 60000)
         self.daemon = True
         self.env = ObstacleTowerEnv('../ObstacleTower/obstacletower', worker_id=self.seed,
-                               retro=True, config={'starting-floor': 5, 'total-floors': 10, 'tower-seed': 5}, greyscale=True, timeout_wait=300)
+                               retro=True, config={'total-floors': 10, 'tower-seed': -1}, greyscale=True, timeout_wait=300)
         self.env._flattener = ActionFlattener([2, 3, 2, 1])
         self.env._action_space = self.env._flattener.action_space
         self.env_name = env_name
