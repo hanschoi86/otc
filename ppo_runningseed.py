@@ -28,7 +28,7 @@ if __name__ == "__main__":
     parser.add_argument('--num_cpu', help='number of cpu cores', type=int, default=16)
     parser.add_argument('--gamma', help='PPO gamma', type=float, default=0.999)
     parser.add_argument('--num_timesteps', type=int, default=int(1e7))
-    parser.add_argument('--learning_rate', type=float, default=.00003)
+    parser.add_argument('--learning_rate', type=float, default=.0000625)
     args = parser.parse_args()
 
     num_cpu = args.num_cpu
@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     # Create PPO model for GPU
     multimodel = PPO2(CnnPolicy, multienv, verbose=1, gamma=args.gamma, learning_rate=args.learning_rate, 
-                      cliprange=.1, n_steps=1024)
+                      cliprange=.1, n_steps=128)
     multimodel = multimodel.load('models/ppo/multimodel_running', multienv)
     multimodel.learn(total_timesteps=args.num_timesteps)
     multimodel.save('models/ppo/multimodel_runningseed')
