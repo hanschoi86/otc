@@ -97,7 +97,7 @@ class AtariEnvironment(Process):
         self.seed = np.random.randint(0, 60000)
         self.daemon = True
         self.env = ObstacleTowerEnv('../ObstacleTower/obstacletower', worker_id=self.seed,
-                               retro=True, config={'total-floors': 12, 'tower-seed': 5}, greyscale=True, timeout_wait=300)
+                               retro=True, config={'total-floors': 12, 'tower-seed': -1}, greyscale=True, timeout_wait=300)
         self.env._flattener = ActionFlattener([2, 3, 2, 1])
         self.env._action_space = self.env._flattener.action_space
         self.env_name = env_name
@@ -150,8 +150,8 @@ class AtariEnvironment(Process):
             self.steps += 1
 
             if done:
-                self.recent_rlist.append(self.rall)
                 real_reward = self.rall - ((self.rall * 100) % 10) * 1.01
+                self.recent_rlist.append(real_reward)
                 print("[Episode {}({})] Step: {}  Reward: {}  Recent Reward: {}".format(
                     self.episode, self.env_idx, self.steps, real_reward, np.mean(self.recent_rlist)))
 
