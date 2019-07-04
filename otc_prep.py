@@ -61,6 +61,10 @@ class Preprocessing(object):
     return self.environment.action_space
 
   @property
+  def number_agents(self):
+    return self.environment.number_agents
+
+  @property
   def reward_range(self):
     return self.environment.reward_range
 
@@ -97,3 +101,15 @@ class Preprocessing(object):
     if self.grey:
       observation = cv2.cvtColor(observation, cv2.COLOR_RGB2GRAY).reshape((84, 84, 1))
     return observation, reward, game_over, info
+
+  def done_grading(self):
+    return self.environment.done_grading
+
+  def is_grading(self):
+    return self.environment.is_grading
+
+  def close(self):
+    return self.environment.close
+
+  def floor(self, floor):
+    return self.environment.floor(floor)
