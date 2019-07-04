@@ -150,8 +150,8 @@ class AtariEnvironment(Process):
             self.steps += 1
 
             if done:
-                self.recent_rlist.append(self.rall)
                 real_reward = self.rall - ((self.rall * 100) % 10) * 1.01
+                self.recent_rlist.append(real_reward)
                 print("[Episode {}({})] Step: {}  Reward: {}  Recent Reward: {}".format(
                     self.episode, self.env_idx, self.steps, real_reward, np.mean(self.recent_rlist)))
 
