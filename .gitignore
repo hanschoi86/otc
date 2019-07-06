@@ -9,6 +9,8 @@ rnd/default_models/otc*
 rnd_deep/trained_models/otc*
 rndseed/trained_models/otc*
 rndseed/runs/
+rnd_ten/runs/
+rnd_ten/trained_models/otc*
 models/ppodeep/cpu*
 models/ppo/cpu*
 models/ppohigh/cpu*
