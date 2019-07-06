@@ -129,7 +129,7 @@ def train_model(args, device, output_size, model, rnd, optimizer, s_batch, targe
             optimizer.step()
 
 
-def main():
+def main(initial):
     args = get_args()
     device = torch.device('cuda' if args.cuda else 'cpu')
     seed = np.random.randint(0, 100)
@@ -391,4 +391,7 @@ def main():
 if __name__ == '__main__':
     for i in range(100):
         print("Beginning Main Iteration", i)
-        main()
+        if i == 0:
+            main(True)
+        else:
+            main(False)
