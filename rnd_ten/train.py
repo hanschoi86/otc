@@ -169,23 +169,26 @@ def main(initial):
         else:
             model.load_state_dict(torch.load(model_path, map_location='cpu'))
 
-    works = []
-    parent_conns = []
-    child_conns = []
-    for idx in range(args.num_worker):
-        parent_conn, child_conn = Pipe()
-        work = AtariEnvironment(
-        	args.env_name,
-            is_render, 
-        	idx, 
-        	child_conn, 
-        	sticky_action=args.sticky_action, 
-        	p=args.sticky_action_prob,
-        	max_episode_steps=args.max_episode_steps)
-        work.start()
-        works.append(work)
-        parent_conns.append(parent_conn)
-        child_conns.append(child_conn)
+    global works, parent_conns, child_conns
+
+    if initial:
+        works = []
+        parent_conns = []
+        child_conns = []
+        for idx in range(args.num_worker):
+            parent_conn, child_conn = Pipe()
+            work = AtariEnvironment(
+                args.env_name,
+                is_render,
+                idx,
+                child_conn,
+                sticky_action=args.sticky_action,
+                p=args.sticky_action_prob,
+                max_episode_steps=args.max_episode_steps)
+            work.start()
+            works.append(work)
+            parent_conns.append(parent_conn)
+            child_conns.append(child_conn)
 
     states = np.zeros([args.num_worker, 4, 84, 84])
 
