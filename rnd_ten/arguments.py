@@ -11,7 +11,7 @@ def get_args():
                         help='Learning rate (default: 1e-4)')
     parser.add_argument('--num-worker', type=int, default=16,
                         help='Number of workers (CPU processes) to use (default: 16)')
-    parser.add_argument('--num-step', type=int, default=1024,
+    parser.add_argument('--num-step', type=int, default=128,
                         help='Number of forward steps (default: 128)')
     parser.add_argument('--eps', type=float, default=0.1,
                         help='Epsilon (default: 0.1)')
@@ -45,7 +45,7 @@ def get_args():
                         help='Maximum steps per episode (default: 18000)')
     parser.add_argument('--pre-obs-norm-steps', type=int, default=10,
                         help='Number of steps for pre-normalization (default: 50)')
-    parser.add_argument('--save-interval', type=int, default=150,
+    parser.add_argument('--save-interval', type=int, default=50,
                         help='Save interval, one save per n updates (default: 100)')
     parser.add_argument('--load-model', action='store_true', default=True,
                         help='Load pre-trained Model (default: False)')
