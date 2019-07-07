@@ -11,7 +11,7 @@ def get_args():
                         help='Learning rate (default: 1e-4)')
     parser.add_argument('--num-worker', type=int, default=16,
                         help='Number of workers (CPU processes) to use (default: 16)')
-    parser.add_argument('--num-step', type=int, default=2048,
+    parser.add_argument('--num-step', type=int, default=1024,
                         help='Number of forward steps (default: 128)')
     parser.add_argument('--eps', type=float, default=0.1,
                         help='Epsilon (default: 0.1)')
