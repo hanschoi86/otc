@@ -363,7 +363,7 @@ def main(initial):
             torch.save(model.state_dict(), model_path)
             torch.save(rnd.predictor.state_dict(), predictor_path)
             torch.save(rnd.target.state_dict(), target_path)
-
+            """
             checkpoint_list = np.array([int(re.search(r"\d+(\.\d+)?", x)[0]) for x in glob.glob(os.path.join('trained_models', args.env_name+'*.model'))])
             if len(checkpoint_list) == 0:
                 last_checkpoint = -1
@@ -381,7 +381,7 @@ def main(initial):
                 torch.save(rnd.predictor.state_dict(), f)
             with open(incre_target_path, 'wb') as f:
                 torch.save(rnd.target.state_dict(), f)
-
+            """
             if args.terminate and (global_step > args.terminate_steps):
                 with open('reward_rms.pkl', 'wb') as f:
                     dill.dump(reward_rms, f)
