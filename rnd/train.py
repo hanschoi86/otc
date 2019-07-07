@@ -169,6 +169,7 @@ def main(initial):
         else:
             model.load_state_dict(torch.load(model_path, map_location='cpu'))
 
+    global works, parent_conns, child_conns
     if initial:
         works = []
         parent_conns = []
