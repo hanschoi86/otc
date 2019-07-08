@@ -22,7 +22,7 @@ class OTCEnvironment(Process):
             history_size=4,
             h=84,
             w=84,
-            sticky_action=True,
+            sticky_action=False,
             p=0.25,
             max_episode_steps=18000):
         super(OTCEnvironment, self).__init__()
