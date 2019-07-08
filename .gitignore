@@ -7,8 +7,8 @@ UnitySDK.log
 rnd/trained_models/otc*
 rnd/default_models/otc*
 rnd_deep/trained_models/otc*
-rndseed/trained_models/otc*
-rndseed/runs/
+rnd_seed/trained_models/otc*
+rnd_seed/runs/
 rnd_ten/runs/
 rnd_ten/trained_models/otc*
 models/ppodeep/cpu*
