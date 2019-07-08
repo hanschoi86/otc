@@ -11,6 +11,8 @@ rnd_seed/trained_models/otc*
 rnd_seed/runs/
 rnd_ten/runs/
 rnd_ten/trained_models/otc*
+rnd_ten_full/runs/
+rnd_ten_full/trained_models/otc*
 models/ppodeep/cpu*
 models/ppo/cpu*
 models/ppohigh/cpu*
