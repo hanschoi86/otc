@@ -135,7 +135,7 @@ def main(initial):
     seed = np.random.randint(0, 100)
 
     env = ObstacleTowerEnv('../ObstacleTower/obstacletower', worker_id=seed,
-                               retro=True, config={'total-floors': 12}, greyscale=True, timeout_wait=300)
+                               retro=True, config={'total-floors': 12, 'tower-seed': -1}, greyscale=True, timeout_wait=300)
     env._flattener = ActionFlattener([2, 3, 2, 1])
     env._action_space = env._flattener.action_space
     input_size = env.observation_space.shape  # 4

@@ -7,7 +7,7 @@ def get_args():
     parser = argparse.ArgumentParser(description='RL')
     parser.add_argument('--algo', default='rnd',
                         help='Algorithm to use: rnd | ppo')
-    parser.add_argument('--lr', type=float, default=.0000325,
+    parser.add_argument('--lr', type=float, default=.0001025,
                         help='Learning rate (default: 1e-4)')
     parser.add_argument('--num-worker', type=int, default=16,
                         help='Number of workers (CPU processes) to use (default: 16)')
