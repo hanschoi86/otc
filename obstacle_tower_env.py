@@ -211,14 +211,6 @@ class ObstacleTowerEnv(gym.Env):
         obs, reward, done, info = self._single_step(info)
         self.game_over = done
 
-        if info.get('total_keys') > self.current_keys:
-            reward = 1.11
-            self.current_keys = info.get('total_keys')
-
-        if info.get('current_floor') > self.current_floor:
-            self.current_floor = info.get('current_floor')
-            self.current_keys = 0
-
         if info.get('text_observation') == 'evaluation_complete':
             done = True
             self._done_grading = True
@@ -241,6 +233,15 @@ class ObstacleTowerEnv(gym.Env):
 
         if self._greyscale:
             default_observation = self._greyscale_obs(default_observation)
+
+        if keys > self.current_keys:
+            info.rewards[0] = 1.11
+            self.current_keys = keys
+
+        if current_floor > self.current_floor:
+            self.current_floor = current_floor
+            self.current_keys = 0
+
 
         return default_observation, info.rewards[0], info.local_done[0], {
             "text_observation": info.text_observations[0],
